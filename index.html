@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Canvas Draw</title>
+
+</head>
+	<h3>Simple Sketcher</h3>
+    <div>
+    <p>
+    	Colour
+        <a href="#" id="rc" style="width:16px;height:16px;background-color:#FF0000;display:inline-block;color:#FFFFFF;border:1px solid #000000;"></a>
+        <a href="#" id="gc" style="width:16px;height:16px;background-color:#00FF00;display:inline-block;color:#FFFFFF;border:1px solid #000000;"></a>
+        <a href="#" id="bc" style="width:16px;height:16px;background-color:#0000FF;display:inline-block;color:#FFFFFF;border:1px solid #000000;"></a>
+        <a href="#" id="blc" style="width:16px;height:16px;background-color:#000000;display:inline-block;color:#FFFFFF;border:1px solid #000000;"></a>
+        <a href="#" id="whc" style="width:16px;height:16px;background-color:#FFFFFF;display:inline-block;color:#FFFFFF;border:1px solid #000000;"></a>
+        Size
+        <input id="ra" type="range" min="1" max="10" />
+        Shape
+        <a href="#" id="ci" ><svg width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle cx="10" cy="10" r="8" stroke="black" stroke-width="2" fill="white"/></svg></a>
+        <a href="#" id="sq" ><svg width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" version="1.1"><rect x="2" y="2" width="16" height="16"  style="fill:rgb(255,255,255);stroke-width:2;stroke:rgb(0,0,0)"/></svg></a>
+    </p>
+    </div>
+    <canvas id="myCanvas" width="400" height="300"
+    style="border:1px solid #000000;"></canvas>
+    
+    <img id="out" style="border:1px solid #000000;" />
+    <br/>
+    <a href="#" id="take">Screen Grab</a>
+    <a href="#" id="clear">Clear Canvas</a>
+    <script>
+	var c=document.getElementById("myCanvas");
+	var ctx=c.getContext("2d");
+	var i=document.getElementById("out");
+	var b=document.getElementById("take");
+	var clr=document.getElementById("clear");
+	var rc=document.getElementById("rc");
+	var gc=document.getElementById("gc");
+	var bc=document.getElementById("bc");
+	var blc=document.getElementById("blc");
+	var whc=document.getElementById("whc");
+	var ra=document.getElementById("ra");
+	var ci=document.getElementById("ci");
+	var sq=document.getElementById("sq");
+	var mDown = false;
+	var col = "#000000";
+	var sh = "ci";
+	
+	function draw(mX,mY){
+		ctx.fillStyle=col;
+		var s = ra.value;
+		if(sh == "sq"){
+			drawSquare(mX,mY,s)
+		}else{
+			drawCircle(mX,mY,s);
+		}
+	}
+
+	function drawSquare(mX,mY,s){
+		ctx.fillRect(mX-(s * .5),mY-(s * .5),s,s);
+	}
+	
+	function drawCircle(mX,mY,s){
+		ctx.beginPath();
+		var s = ra.value;
+		ctx.arc(mX,mY,s,0,2*Math.PI);
+		ctx.fill();	
+	}
+	
+	function clear(){
+		ctx.fillStyle="#FFFFFF";
+		ctx.fillRect(0,0,400,300);
+	}
+	
+	function snap(){
+		var img    = c.toDataURL("image/png");
+		i.src= img;
+	}
+	
+	function mouseMove(e){
+		e.preventDefault();
+		var mouseX, mouseY;
+		if(e.offsetX) {
+			mouseX = e.offsetX;
+			mouseY = e.offsetY;
+		}
+		else if(e.layerX) {
+			mouseX = e.layerX;
+			mouseY = e.layerY;
+		}
+		
+		if(mDown){
+			
+	//c.style.cursor = "crosshair";
+			draw(mouseX,mouseY);
+		}
+	}
+	draw();
+	c.onmousedown = function(e){mDown=true; mouseMove(e);}
+	c.onmousemove = mouseMove;
+	document.onmouseup=function(e){	mDown=false;}
+	document.onmousedown=function(e){ mDown=true;}
+	
+	ci.onclick=function(e){ sh = "ci";}
+	sq.onclick=function(e){ sh = "sq";}
+	
+	rc.onclick=function(e){ col = "#ff0000"};
+	gc.onclick=function(e){ col = "#00ff00"};
+	bc.onclick=function(e){ col = "#0000ff"};
+	blc.onclick=function(e){ col = "#000000"};
+	whc.onclick=function(e){ col = "#ffffff"};
+	
+	b.onclick=snap;
+	clr.onclick=clear;
+	
+	c.style.cursor = "pointer";
+
+</script>
+    
+<body>
+</body>
+</html>
